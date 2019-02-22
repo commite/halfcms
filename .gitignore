@@ -1,2 +1,3 @@
 *.pyc
 myvenvCMS/
+db.sqlite3
