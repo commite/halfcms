@@ -5,8 +5,6 @@ db.sqlite3
 node_modules.sh
 node_modules/
 nodesource_setup.sh
-*.json
-yarn.lock
 uikit/
 
 

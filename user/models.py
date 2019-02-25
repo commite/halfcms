@@ -30,7 +30,7 @@ class MyUserManager(UserManager):
 
 
 class User(AbstractUser):
-    username = models.CharField(max_length=100, blank=True, null=True)
+    username = None
     email = models.EmailField(_('email address'), unique=True)
     #  """verbose_name --> _"""
     is_admin = models.BooleanField(default=False)
