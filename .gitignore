@@ -1,3 +1,12 @@
 *.pyc
 myvenvCMS/
 db.sqlite3
+#por culpa de la instalacion de uikit ¿habría que haberlo hecho fuera?
+node_modules.sh
+node_modules/
+nodesource_setup.sh
+*.json
+yarn.lock
+uikit/
+
+
