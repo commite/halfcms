@@ -5,7 +5,7 @@ from django.utils.translation import ugettext_lazy as _
 
 
 class MyUserManager(UserManager):
-    def create_user(self, email, password=None):
+    def create_user(self, email, password=None, **kwargs):
         if not email:
             raise ValueError('You must enter an email address')
 
