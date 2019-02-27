@@ -26,6 +26,7 @@ def sign_up(request):
                                         first_name=first_name,
                                         last_name=last_name
                                         )
+#∫                form.save()
                 user = authenticate(email=email, password=password)
                 login(request, user)
 #                return HttpResponseRedirect('/user/user_page')

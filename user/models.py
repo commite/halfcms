@@ -5,12 +5,13 @@ from django.utils.translation import ugettext_lazy as _
 
 
 class MyUserManager(UserManager):
-    def create_user(self, email, password=None, **kwargs):
+    def create_user(self, email, password, **kwargs):
         if not email:
             raise ValueError('You must enter an email address')
 
         user = self.model(
             email=self.normalize_email(email),
+            password=password, **kwargs
             # lowercapital #
         )
         user.set_password(password)
