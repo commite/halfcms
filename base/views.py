@@ -16,17 +16,10 @@ def sign_up(request):
         form = SignUpForm(request.POST)
         if form.is_valid():
             userObj = form.cleaned_data
-            first_name = userObj['first_name']
-            last_name = userObj['last_name']
             email = userObj['email']
             password = userObj['password']
             if not User.objects.filter(email=email).exists():
-                User.objects.create_user(
-                                        email, password,
-                                        first_name=first_name,
-                                        last_name=last_name
-                                        )
-#∫                form.save()
+                form.save()
                 user = authenticate(email=email, password=password)
                 login(request, user)
 #                return HttpResponseRedirect('/user/user_page')
