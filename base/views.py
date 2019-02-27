@@ -4,6 +4,7 @@ from user.models import User
 from user.forms import SignUpForm
 from django.contrib.auth import authenticate, login
 from django.http import HttpResponseRedirect
+from django.urls import reverse
 
 
 def home(request):
@@ -27,7 +28,8 @@ def sign_up(request):
                                         )
                 user = authenticate(email=email, password=password)
                 login(request, user)
-                return HttpResponseRedirect('/user/user_page')
+#                return HttpResponseRedirect('/user/user_page')
+                return HttpResponseRedirect(reverse('user_page'))
             else:
                 raise forms.ValidationError('This email already exists')
     else:
@@ -41,7 +43,7 @@ def sign_in(request):
         password = request.POST['password']
         user = authenticate(email=email, password=password)
         login(request, user)
-        return HttpResponseRedirect('/user/user_page')
+        return HttpResponseRedirect(reverse('user_page'))
     return render(request, 'base/sign_in.html', {})
 
 
