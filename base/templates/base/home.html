@@ -3,12 +3,15 @@
 {% block content %}
 <div class="home">
   {% if user.is_authenticated %}
-  <p> You are logged as {{ user.email }}</p>
-  <p><a href="/logout">SignOut</a></p>
+  <p>You are logged as {{ user.email }}</p>
+  <p><a href="/logout">Sign Out</a></p>
   {% else %}
-  <button type="submit" class="btn_s_up sign_up">Sign up</button>
-  <a href="{% url 'sign_up' %}"></a>
-  <button type="submit" class="btn_s_in">Sign in</button>
+  <p>
+    <a href="{% url 'sign_up' %}" title="Regístrate">Sign Up</a>
+  </p>
+  <p>
+    <a href="{% url 'sign_in' %}" title="Acceede">Sign In!</a>
+  </p>
 </div>
 {% endif %}
 {% endblock %}
