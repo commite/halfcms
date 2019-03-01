@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django import forms
 from user.models import User
 from user.forms import SignUpForm
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
 from django.http import HttpResponseRedirect
 from django.urls import reverse
 
@@ -32,13 +32,22 @@ def sign_up(request):
 
 
 def sign_in(request):
+    context = {}
     if request.method == 'POST':
         email = request.POST['email']
         password = request.POST['password']
         user = authenticate(email=email, password=password)
-        login(request, user)
-        return HttpResponseRedirect(reverse('user_page'))
-    return render(request, 'base/sign_in.html', {})
+        if user is not None:
+            login(request, user)
+            return HttpResponseRedirect(reverse('user_page'))
+        else:
+            context['errors'] = 'Sorry, that user does not exists'
+    return render(request, 'base/sign_in.html', context)
+
+
+def logout_user(request):
+    logout(request)
+    return render(request, 'base/logout_user.html', {})
 
 
 def user_page(request):
