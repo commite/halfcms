@@ -6,7 +6,7 @@ from django import forms
 from user.models import User, LoginToken
 from user.forms import SignUpForm
 from django.contrib.auth import authenticate, login, logout
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpRequest
 from django.urls import reverse
 from django.core.mail import send_mail
 
@@ -66,14 +66,19 @@ def create_magic_link(request):
             context['error'] = 'User not registered, please go to \
                                 the Sign-Up Page'
         else:
-            salt = hashlib.sha1(str(random.random()).encode('utf-8')).hexdigest()[:5]
-            token_id = hashlib.sha1(str(salt+email).encode('utf-8')).hexdigest()
+            salt = hashlib.sha1(str(random.random()).encode(
+                    'utf-8')).hexdigest()[:5]
+            token_id = hashlib.sha1(str(
+                        salt+email).encode('utf-8')).hexdigest()
             expiration = datetime.now() + timedelta(hours=1)
             login_token = LoginToken(email=email, token_id=token_id,
                                      token_expires=expiration)
             login_token.save()
-            email_body = 'Hola {}, Pulse el enlace para logarte: {}' \
-                         .format(email, reverse('magic_confirm', args=[token_id]))
+            url = 'http://127.0.0.1:8000'
+            email_body = 'Hola {}, Pulse el enlace para logarte: {}{}' \
+                         .format(email, url, login_token.get_absolute_url())
+                         #.format(email, HttpRequest.build_absolute_uri(
+                         #reverse('magic_confirm'),
 
             send_mail('Magic Link', email_body, 'mymail@mail.es',
                       [email], fail_silently=True)
