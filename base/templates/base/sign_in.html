@@ -13,9 +13,9 @@
   </p>
   <button type="submit">Sign in!</button>
   </form>
-  <p>Forget password? <a href="{% url 'password_reset' %}">Reset it!</a></p>
-
   {% if errors %}
   <p>{{ errors }}</p>
   {% endif %}
+  <p>Forget password? <a href="{% url 'password_reset' %}">Reset it!</a></p>
+  <p>Feeling tired? Just login by <a href="{% url 'magic_link' %}">MagicLogin</a>
 {% endblock%}

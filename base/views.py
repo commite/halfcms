@@ -1,10 +1,14 @@
+import hashlib
+import random
+from datetime import datetime, timedelta, timezone
 from django.shortcuts import render
 from django import forms
-from user.models import User
+from user.models import User, LoginToken
 from user.forms import SignUpForm
 from django.contrib.auth import authenticate, login, logout
 from django.http import HttpResponseRedirect
 from django.urls import reverse
+from django.core.mail import send_mail
 
 
 def home(request):
@@ -52,3 +56,47 @@ def logout_user(request):
 
 def user_page(request):
     return render(request, 'base/user_page.html', {})
+
+
+def create_magic_link(request):
+    context = {}
+    if request.method == 'POST':
+        email = request.POST['email']
+        if not User.objects.filter(email=email).exists():
+            context['error'] = 'User not registered, please go to \
+                                the Sign-Up Page'
+        else:
+            salt = hashlib.sha1(str(random.random()).encode('utf-8')).hexdigest()[:5]
+            token_id = hashlib.sha1(str(salt+email).encode('utf-8')).hexdigest()
+            expiration = datetime.now() + timedelta(hours=1)
+            login_token = LoginToken(email=email, token_id=token_id,
+                                     token_expires=expiration)
+            login_token.save()
+            email_body = 'Hola {}, Pulse el enlace para logarte: {}' \
+                         .format(email, reverse('magic_confirm', args=[token_id]))
+
+            send_mail('Magic Link', email_body, 'mymail@mail.es',
+                      [email], fail_silently=True)
+            context['success'] = 'Check your inbox!'
+    return render(request, 'base/magic_link.html', context)
+
+
+def magic_login_confirm(request, activation_key):
+    context = {}
+    if request.user.is_authenticated:
+        HttpResponseRedirect(reverse('user_page'))
+    try:
+        login_token = LoginToken.objects.get(token_id=activation_key)
+        if login_token.token_expires < datetime.now(timezone.utc):
+            context['error'] = 'This token has expired.'
+        elif login_token.is_used:
+            context['error'] = 'This token has already been used.'
+        else:
+            login_token.is_used = True
+            login_token.save()
+            user = User.objects.get(email=login_token.email)
+            login(request, user)
+            return HttpResponseRedirect(reverse('user_page'))
+    except LoginToken.DoesNotExist:
+        context['error'] = 'This token does not exist.'
+    return render(request, 'base/magic_link_confirm.html', context)

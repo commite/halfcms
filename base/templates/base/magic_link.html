@@ -1,0 +1,18 @@
+{% extends 'base/base.html' %}
+
+{% block content %}
+<h3>Magic Login</h3>
+<p>Please, insert you mail so we will send you a link to login</p>
+<form method="POST">{% csrf_token %}
+  <label>Email</label>
+  <input type="email" name="email"></input>
+  <input type="submit" name="Submit" value="Submit">
+</form>
+{% if error %}
+  {{ error }}
+  <a href="{% url 'sign_up' %}">Go to SignUp Page></a>
+{% endif %}
+{% if success %}
+  <p>{{ success }}</p>
+{% endif %}
+{% endblock %}
