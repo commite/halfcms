@@ -1,4 +1,4 @@
-from django.urls import path, include
+from django.urls import path, include, re_path
 from base import views
 
 urlpatterns = [
@@ -8,7 +8,7 @@ urlpatterns = [
     path('user/logout', views.logout_user, name="logout_user"),
     path('user/user-page', views.user_page, name="user_page"),
     path('user/magic-link', views.create_magic_link, name="magic_link"),
-    path('user/magic-confirm/(?P<activation_key>\w+)/',
-         views.magic_login_confirm, name="magic_confirm"),
+    re_path('user/magic-confirm/(?P<activation_key>\w+)/',
+            views.magic_login_confirm, name="magic_confirm"),
     path('registration/', include('django.contrib.auth.urls'))
 ]

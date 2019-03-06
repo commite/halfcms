@@ -1,12 +1,12 @@
 import hashlib
 import random
-from datetime import datetime, timedelta, timezone
+from datetime import timedelta, datetime, timezone
 from django.shortcuts import render
 from django import forms
 from user.models import User, LoginToken
 from user.forms import SignUpForm
 from django.contrib.auth import authenticate, login, logout
-from django.http import HttpResponseRedirect, HttpRequest
+from django.http import HttpResponseRedirect
 from django.urls import reverse
 from django.core.mail import send_mail
 
@@ -26,7 +26,6 @@ def sign_up(request):
                 form.save()
                 user = authenticate(email=email, password=password)
                 login(request, user)
-#                return HttpResponseRedirect('/user/user_page')
                 return HttpResponseRedirect(reverse('user_page'))
             else:
                 raise forms.ValidationError('This email already exists')
@@ -70,15 +69,13 @@ def create_magic_link(request):
                     'utf-8')).hexdigest()[:5]
             token_id = hashlib.sha1(str(
                         salt+email).encode('utf-8')).hexdigest()
-            expiration = datetime.now() + timedelta(hours=1)
+            expiration = datetime.now(timezone.utc) + timedelta(hours=1)
             login_token = LoginToken(email=email, token_id=token_id,
                                      token_expires=expiration)
             login_token.save()
-            url = 'http://127.0.0.1:8000'
-            email_body = 'Hola {}, Pulse el enlace para logarte: {}{}' \
-                         .format(email, url, login_token.get_absolute_url())
-                         #.format(email, HttpRequest.build_absolute_uri(
-                         #reverse('magic_confirm'),
+            home = 'http://127.0.0.1:8000'
+            email_body = 'Hello {}, Please click this link to login: {}{}' \
+                         .format(email, home, login_token.get_absolute_url())
 
             send_mail('Magic Link', email_body, 'mymail@mail.es',
                       [email], fail_silently=True)
