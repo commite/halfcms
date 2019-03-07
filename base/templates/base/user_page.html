@@ -1,6 +1,16 @@
 {% extends 'base/base.html' %}
 
 {% block content %}
+{% load humanize %}
 <h1>Personal Page</h1>
-<p>Wellcome {{ user.email }} </p>
+<p>Welcome {{ user.email }} </p>
+<ul>
+  <li> {{ user.first_name }}</li>
+  <li> {{ user.last_name }}</li>
+  <li> {{ user.email }}</li>
+  <li> Date joined: {{ user.date_joined }}</li>
+  <li> Last login was in {{ user.last_login|naturalday }},
+      {{ user.last_login|naturaltime }}</li>
+</ul>
+<a href="{% url 'logout_user' %}">Logout</a>
 {% endblock %}

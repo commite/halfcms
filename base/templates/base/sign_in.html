@@ -13,4 +13,7 @@
   </p>
   <button type="submit">Sign in!</button>
   </form>
+  {% if errors %}
+  <p>{{ errors }}</p>
+  {% endif %}
 {% endblock%}
